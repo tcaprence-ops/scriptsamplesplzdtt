@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ecommerce Script + KSP Tool</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 30px;
+            background: #f5f5f5;
+        }
+        .main-wrapper {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+        }
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 48%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        input[type=text] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .result-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-size: 15px;
+            min-height: 80px;
+        }
+        .copyBtn {
+            margin-top: 15px;
+            padding: 10px 18px;
+            background: #007bff;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .copyBtn:hover {
+            background: #0056b3;
+        }
+        .copiedMsg {
+            margin-top: 10px;
+            color: green;
+            font-size: 14px;
+            display: none;
+        }
+        h2, h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+
+    <!-- LEFT SIDE: ECOMMERCE SCRIPTS -->
+    <div class="box">
+        <h2>Ecommerce Script</h2>
+        <p>Type keyword (e.g., <b>delivery</b>, <b>invoice</b>, <b>email</b>)</p>
+
+        <input type="text" id="searchInput" placeholder="Search script..." onkeyup="generateScript()">
+
+        <div id="result" class="result-box">Type something above…</div>
+
+        <button class="copyBtn" onclick="copyText('result','copiedMsg1')">Copy Script</button>
+        <div id="copiedMsg1" class="copiedMsg">✔ Script copied!</div>
+    </div>
+
+
+    <!-- RIGHT SIDE: KSP SEARCH -->
+    <div class="box">
+        <h2>Device Key Selling Points</h2>
+        <p>Type model (e.g., <b>GT 6</b>, <b>Nova 14</b>)</p>
+
+        <input type="text" id="kspInput" placeholder="Search device..." onkeyup="generateKSP()">
+
+        <div id="kspResult" class="result-box">Type a device name above…</div>
+
+        <button class="copyBtn" onclick="copyText('kspResult','copiedMsg2')">Copy KSP</button>
+        <div id="copiedMsg2" class="copiedMsg">✔ KSP copied!</div>
+    </div>
+
+</div>
+
+
+
+<script>
+// =============================
+// SCRIPT MANAGER
+const scripts = {
+    "delivery": `Only when customer asked for Shipping TAT:
+
+Metro Manila: 3-7 calendar days
+Outside Metro Manila: 5–12 calendar days
+(Excluding Sundays and public holidays)`,
+
+    "invoice": `PERSONAL/COMPANY:
+NAME:
+CONTACT NUMBER:
+NAME ON THE SALES INVOICE:
+EMAIL ADDRESS:
+ORDER ID:
+SERIAL NUMBER OF DEVICE:
+SOFT OR HARD COPY:
+ADDRESS TO BE PUT ON INVOICE:
+DELIVERY ADDRESS FOR HARD COPY:
+Phone number for Hard copy delivery address:
+
+(For Company Invoice Only)
+BUSINESS STYLE:
+TIN #:
+
+You may find the serial number on the side of the box.
+Please review and confirm that all information provided is correct before submission. Once the invoice has been issued, we're unable to make any changes or reissue it.`,
+
+    "email": `Here’s an easier way to access your DepEd email:
+
+1. Open Edge browser and log in to Gmail.
+2. Tap the three dots in the upper right corner.
+3. Select “Add to phone.”
+4. Tap “Add” when prompted.
+
+A shortcut will be added to your home screen for faster access.`
+};
+
+
+// =============================
+// KSP DATABASE
+const ksp = {
+    "gt 6": `<b>Main KSP HUAWEI WATCH GT 6</b>
+• Up to 21-day battery life
+• Ride the Wind Wrist-based Cycling Power
+• Multi-dimensional emotional well-being
+• Women's health monitoring
+• Works with HUAWEI Health+
+
+<b>GT 6 Pro</b>
+• Titanium alloy case, sapphire glass, ceramic back
+• ECG Analysis
+• Advanced outdoor sports
+
+<b>GT 6 Series</b>
+• Stainless steel
+• For 41mm - up to 14 days battery life
+• For 46mm - up to 21 days battery life
+• Comprehensive Health Management
+• Superior Running & Cycling Experience`,
+
+
+    "nova 14": `<b>Main KSP HUAWEI Nova 14</b>
+• Always in Style
+• Pro Your Portrait
+• Truly AI-Powered 
+• All-Around Performance Upgrade
+• Works with HUAWEI Health+
+
+<b>Nova 14 Pro</b>
+• 50 MP Front AI Portrait dual camera
+• Ultra Chroma camera
+• AI remove / AI gesture control / AI messaging
+• 100W Huawei supercharge turbo
+• 6.78'' flawless quad curved display
+
+<b>Nova 14</b>
+• 50 MP Front AI Portrait camera
+• AI remove
+• 50 MP ultra vision camera
+• 100W Huawei supercharge turbo
+• 5500mAh battery
+• 6.7-inch OLED flat-edge screen
+
+<b>Nova 14i</b>
+• 7000mAh super battery
+• X button shortcut
+• EMUI 14.2 seamless
+• 50 MP AI dual camera`,
+
+
+    "matepad 12": `<b>Main KSP HUAWEI MatePad 12 X New</b>
+
+• 12-inch Ultra-Clear PaperMatte Display
+• PC-Level WPS Office 3.0
+• HUAWEI M-Pencil Pro
+• Upgraded HUAWEI Notes
+• GoPaint App
+• Stylish yet Powerful
+
+<b>Key Upgrades:</b>
+1. New PaperMatte Display (50% sparkle reduction)
+2. +27% performance improvement
+3. GoPaint: 3D Oil Brush, Animation tools
+4. 50MP rear camera
+5. Wi-Fi 7 support
+6. Live-Multitask switching`
+};
+
+
+// =============================
+// SEARCH SCRIPT
+function generateScript(){
+    let input = document.getElementById("searchInput").value.toLowerCase().trim();
+    let output = "No script found.";
+
+    for (let key in scripts){
+        if(input.includes(key)) {
+            output = scripts[key].replace(/\n/g, "<br>");
+        }
+    }
+    if(input === "") output = "Type something above…";
+    document.getElementById("result").innerHTML = output;
+    document.getElementById("copiedMsg1").style.display = "none";
+}
+
+
+// =============================
+// SEARCH KSP
+function generateKSP(){
+    let input = document.getElementById("kspInput").value.toLowerCase().trim();
+    let output = "No KSP found.";
+
+    for (let device in ksp){
+        if(input.includes(device)) {
+            output = ksp[device].replace(/\n/g, "<br>");
+        }
+    }
+    if(input === "") output = "Type a device name above…";
+
+    document.getElementById("kspResult").innerHTML = output;
+    document.getElementById("copiedMsg2").style.display = "none";
+}
+
+
+// =============================
+// COPY TO CLIPBOARD
+function copyText(resultId,msgId){
+    let text = document.getElementById(resultId).innerText;
+    navigator.clipboard.writeText(text).then(()=>{
+        let msg = document.getElementById(msgId);
+        msg.style.display = "block";
+        setTimeout(() => msg.style.display = "none", 1500);
+    });
+}
+</script>
+
+</body>
+</html>
